@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Hace que la interfaz se adapte correctamente a celulares -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mis Horarios</title>
+
+    <!-- Hoja de estilos principal -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ============================================================
+         CABECERA PRINCIPAL
+         ============================================================ -->
+    <header class="app-header">
+
+        <div>
+            <h1>📅 Mis Horarios</h1>
+            <p>Organiza tus clases y actividades</p>
+        </div>
+
+        <button id="btnNuevoHorario" class="btn btn-primary">
+            + Nuevo horario
+        </button>
+
+    </header>
+
+
+    <!-- ============================================================
+         CONTENIDO PRINCIPAL
+         ============================================================ -->
+    <main class="container">
+
+        <!-- --------------------------------------------------------
+             SELECTOR DE HORARIOS
+             -------------------------------------------------------- -->
+        <section class="toolbar">
+
+            <div class="selector-container">
+
+                <label for="selectorHorario">
+                    Horario actual
+                </label>
+
+                <select id="selectorHorario">
+                    <!-- JavaScript agregará los horarios aquí -->
+                </select>
+
+            </div>
+
+            <button id="btnEliminarHorario" class="btn btn-danger">
+                🗑 Eliminar horario
+            </button>
+
+        </section>
+
+
+        <!-- --------------------------------------------------------
+             INFORMACIÓN DEL HORARIO
+             -------------------------------------------------------- -->
+        <section class="schedule-info">
+
+            <div>
+                <h2 id="nombreHorario">
+                    Sin horario
+                </h2>
+
+                <p id="descripcionHorario">
+                    Crea tu primer horario.
+                </p>
+            </div>
+
+            <button id="btnAgregarMateria" class="btn btn-primary">
+                + Agregar materia
+            </button>
+
+        </section>
+
+
+        <!-- ========================================================
+             HORARIO SEMANAL
+             ======================================================== -->
+
+        <section class="schedule-wrapper">
+
+            <div id="schedule" class="schedule">
+
+                <!--
+
+                JavaScript generará dinámicamente
+                toda esta estructura.
+
+                Ejemplo:
+
+                ┌────────┬────────┬────────┐
+                │ LUNES  │ MARTES │ MIÉRCOLES
+                ├────────┼────────┼────────┤
+                │        │        │
+                │ Materia│        │ Materia
+                │ 7-9    │        │ 9-11
+                │ A-302  │        │ B-201
+                └────────┴────────┴────────┘
+
+                -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ============================================================
+         MODAL PARA CREAR / EDITAR HORARIO
+         ============================================================ -->
+
+    <div id="modalHorario" class="modal hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="tituloModalHorario">
+                    Nuevo horario
+                </h2>
+
+                <button
+                    class="btn-close"
+                    data-close="modalHorario">
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="formHorario">
+
+                <input
+                    type="hidden"
+                    id="horarioId">
+
+
+                <div class="form-group">
+
+                    <label for="nombreNuevoHorario">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombreNuevoHorario"
+                        placeholder="Ej: Ingeniería Civil 2026-2"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="descripcionNuevoHorario">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="descripcionNuevoHorario"
+                        placeholder="Ej: Horario del semestre actual">
+                    </textarea>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-close="modalHorario">
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Guardar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================
+         MODAL PARA CREAR / EDITAR MATERIA
+         ============================================================ -->
+
+    <div id="modalMateria" class="modal hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="tituloModalMateria">
+                    Nueva materia
+                </h2>
+
+                <button
+                    class="btn-close"
+                    data-close="modalMateria">
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="formMateria">
+
+                <!-- ID de la materia cuando estamos editando -->
+                <input
+                    type="hidden"
+                    id="materiaId">
+
+
+                <!-- NOMBRE -->
+                <div class="form-group">
+
+                    <label for="nombreMateria">
+                        Nombre de la materia
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombreMateria"
+                        placeholder="Ej: Estructuras de Concreto"
+                        required>
+
+                </div>
+
+
+                <!-- CURSO -->
+                <div class="form-group">
+
+                    <label for="cursoMateria">
+                        Curso / Grupo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cursoMateria"
+                        placeholder="Ej: Ingeniería Civil - Grupo A">
+
+                </div>
+
+
+                <!-- PROFESOR -->
+                <div class="form-group">
+
+                    <label for="profesorMateria">
+                        Profesor
+                    </label>
+
+                    <input
+                        type="text"
+                        id="profesorMateria"
+                        placeholder="Ej: Carlos Pérez">
+
+                </div>
+
+
+                <!-- SALÓN -->
+                <div class="form-group">
+
+                    <label for="salonMateria">
+                        Salón / Lugar
+                    </label>
+
+                    <input
+                        type="text"
+                        id="salonMateria"
+                        placeholder="Ej: Aula 302">
+
+                </div>
+
+
+                <!-- DÍA -->
+                <div class="form-group">
+
+                    <label for="diaMateria">
+                        Día
+                    </label>
+
+                    <select id="diaMateria">
+
+                        <option value="lunes">
+                            Lunes
+                        </option>
+
+                        <option value="martes">
+                            Martes
+                        </option>
+
+                        <option value="miercoles">
+                            Miércoles
+                        </option>
+
+                        <option value="jueves">
+                            Jueves
+                        </option>
+
+                        <option value="viernes">
+                            Viernes
+                        </option>
+
+                        <option value="sabado">
+                            Sábado
+                        </option>
+
+                        <option value="domingo">
+                            Domingo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- HORARIOS -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="horaInicio">
+                            Hora inicio
+                        </label>
+
+                        <input
+                            type="time"
+                            id="horaInicio"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="horaFin">
+                            Hora final
+                        </label>
+
+                        <input
+                            type="time"
+                            id="horaFin"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COLOR -->
+                <div class="form-group">
+
+                    <label for="colorMateria">
+                        Color
+                    </label>
+
+                    <input
+                        type="color"
+                        id="colorMateria"
+                        value="#4f46e5">
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-close="modalMateria">
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Guardar materia
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+
+    <script src="app.js"></script>
+
+</body>
+</html>
