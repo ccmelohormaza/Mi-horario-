@@ -1,0 +1,11 @@
+{
+    "name": "Mis Horarios",
+    "short_name": "Horarios",
+    "description": "Aplicación para administrar mis horarios",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#0f1117",
+    "theme_color": "#0f1117",
+    "orientation": "landscape",
+    "lang": "es"
+}
