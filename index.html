@@ -1,0 +1,793 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="theme-color"
+        content="#0f1117">
+
+    <title>Mis Horarios</title>
+
+    <link
+        rel="manifest"
+        href="manifest.json">
+
+    <link
+        rel="stylesheet"
+        href="styles.css">
+
+    <!-- =====================================================
+         SUPABASE
+         ===================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         PANTALLA DE LOGIN
+         ===================================================== -->
+
+    <section
+        id="authScreen"
+        class="auth-screen">
+
+        <div class="auth-card">
+
+            <div class="auth-logo">
+                📅
+            </div>
+
+            <h1>
+                Mis Horarios
+            </h1>
+
+            <p>
+                Tus horarios en todos tus dispositivos.
+            </p>
+
+
+            <!-- =================================================
+                 LOGIN
+                 ================================================= -->
+
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="loginEmail">
+                        Correo
+                    </label>
+
+                    <input
+                        id="loginEmail"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="loginPassword">
+                        Contraseña
+                    </label>
+
+                    <input
+                        id="loginPassword"
+                        type="password"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
+
+
+                <button
+                    class="btn btn-primary btn-full"
+                    type="submit">
+
+                    Iniciar sesión
+
+                </button>
+
+            </form>
+
+
+            <div class="auth-separator">
+                <span>o</span>
+            </div>
+
+
+            <!-- =================================================
+                 REGISTRO
+                 ================================================= -->
+
+            <form id="registerForm">
+
+                <div class="form-group">
+
+                    <label for="registerName">
+                        Nombre
+                    </label>
+
+                    <input
+                        id="registerName"
+                        type="text"
+                        placeholder="Tu nombre"
+                        autocomplete="name"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="registerEmail">
+                        Correo
+                    </label>
+
+                    <input
+                        id="registerEmail"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="registerPassword">
+                        Contraseña
+                    </label>
+
+                    <input
+                        id="registerPassword"
+                        type="password"
+                        placeholder="Mínimo 6 caracteres"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required>
+
+                </div>
+
+
+                <button
+                    class="btn btn-secondary btn-full"
+                    type="submit">
+
+                    Crear cuenta
+
+                </button>
+
+            </form>
+
+
+            <p
+                id="authMessage"
+                class="auth-message">
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         APLICACIÓN
+         ===================================================== -->
+
+    <div
+        id="appScreen"
+        class="app-screen hidden">
+
+
+        <!-- =================================================
+             CABECERA
+             ================================================= -->
+
+        <header class="app-header">
+
+            <div>
+
+                <h1>
+                    📅 Mis Horarios
+                </h1>
+
+                <p id="userName">
+                    Usuario
+                </p>
+
+            </div>
+
+
+            <button
+                id="btnLogout"
+                class="btn btn-secondary">
+
+                Cerrar sesión
+
+            </button>
+
+        </header>
+
+
+
+        <!-- =================================================
+             CONTENIDO PRINCIPAL
+             ================================================= -->
+
+        <main class="container">
+
+
+            <!-- =================================================
+                 SELECTOR DE HORARIOS
+                 ================================================= -->
+
+            <section class="toolbar">
+
+                <div class="selector-container">
+
+                    <label for="selectorHorario">
+                        Horario actual
+                    </label>
+
+                    <select
+                        id="selectorHorario">
+                    </select>
+
+                </div>
+
+
+                <div class="toolbar-actions">
+
+
+                    <!-- NUEVO HORARIO -->
+
+                    <button
+                        id="btnNuevoHorario"
+                        class="btn btn-primary"
+                        type="button">
+
+                        + Nuevo horario
+
+                    </button>
+
+
+                    <!-- COMPARTIR HORARIO -->
+
+                    <button
+                        id="btnCompartirHorario"
+                        class="btn btn-secondary"
+                        type="button">
+
+                        👥 Compartir
+
+                    </button>
+
+
+                    <!-- ELIMINAR HORARIO -->
+
+                    <button
+                        id="btnEliminarHorario"
+                        class="btn btn-danger"
+                        type="button">
+
+                        🗑 Eliminar
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 INFORMACIÓN DEL HORARIO
+                 ================================================= -->
+
+            <section class="schedule-info">
+
+                <div>
+
+                    <h2 id="nombreHorario">
+                        Sin horario
+                    </h2>
+
+                    <p id="descripcionHorario">
+                        Crea tu primer horario.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="btnAgregarMateria"
+                    class="btn btn-primary"
+                    type="button">
+
+                    + Agregar materia
+
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CALENDARIO
+                 ================================================= -->
+
+            <section class="schedule-wrapper">
+
+                <div
+                    id="schedule"
+                    class="schedule">
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MODAL NUEVO HORARIO
+         ===================================================== -->
+
+    <div
+        id="modalHorario"
+        class="modal hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    Nuevo horario
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-close="modalHorario"
+                    aria-label="Cerrar">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form id="formHorario">
+
+                <div class="form-group">
+
+                    <label for="nombreNuevoHorario">
+                        Nombre
+                    </label>
+
+                    <input
+                        id="nombreNuevoHorario"
+                        type="text"
+                        placeholder="Ingeniería Civil 2026-2"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="descripcionNuevoHorario">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="descripcionNuevoHorario"
+                        placeholder="Descripción"></textarea>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-close="modalHorario">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        Guardar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MODAL CREAR / EDITAR MATERIA
+         ===================================================== -->
+
+    <div
+        id="modalMateria"
+        class="modal hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="tituloModalMateria">
+                    Nueva materia
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-close="modalMateria"
+                    aria-label="Cerrar">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form id="formMateria">
+
+
+                <!-- ID OCULTO -->
+
+                <input
+                    type="hidden"
+                    id="materiaId">
+
+
+                <!-- NOMBRE -->
+
+                <div class="form-group">
+
+                    <label for="nombreMateria">
+                        Materia
+                    </label>
+
+                    <input
+                        id="nombreMateria"
+                        type="text"
+                        placeholder="Estructuras"
+                        required>
+
+                </div>
+
+
+                <!-- CURSO -->
+
+                <div class="form-group">
+
+                    <label for="cursoMateria">
+                        Curso / Grupo
+                    </label>
+
+                    <input
+                        id="cursoMateria"
+                        type="text"
+                        placeholder="Grupo A">
+
+                </div>
+
+
+                <!-- PROFESOR -->
+
+                <div class="form-group">
+
+                    <label for="profesorMateria">
+                        Profesor
+                    </label>
+
+                    <input
+                        id="profesorMateria"
+                        type="text"
+                        placeholder="Nombre del profesor">
+
+                </div>
+
+
+                <!-- SALÓN -->
+
+                <div class="form-group">
+
+                    <label for="salonMateria">
+                        Salón / Lugar
+                    </label>
+
+                    <input
+                        id="salonMateria"
+                        type="text"
+                        placeholder="Aula 302">
+
+                </div>
+
+
+                <!-- DÍA -->
+
+                <div class="form-group">
+
+                    <label for="diaMateria">
+                        Día
+                    </label>
+
+                    <select id="diaMateria">
+
+                        <option value="lunes">
+                            Lunes
+                        </option>
+
+                        <option value="martes">
+                            Martes
+                        </option>
+
+                        <option value="miercoles">
+                            Miércoles
+                        </option>
+
+                        <option value="jueves">
+                            Jueves
+                        </option>
+
+                        <option value="viernes">
+                            Viernes
+                        </option>
+
+                        <option value="sabado">
+                            Sábado
+                        </option>
+
+                        <option value="domingo">
+                            Domingo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- HORAS -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="horaInicio">
+                            Hora inicio
+                        </label>
+
+                        <input
+                            id="horaInicio"
+                            type="time"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="horaFin">
+                            Hora fin
+                        </label>
+
+                        <input
+                            id="horaFin"
+                            type="time"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- COLOR -->
+
+                <div class="form-group">
+
+                    <label for="colorMateria">
+                        Color
+                    </label>
+
+                    <input
+                        id="colorMateria"
+                        type="color"
+                        value="#6366f1">
+
+                </div>
+
+
+                <!-- BOTONES -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-close="modalMateria">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        Guardar materia
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MODAL COMPARTIR HORARIO
+         ===================================================== -->
+
+    <div
+        id="modalCompartir"
+        class="modal hidden">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    👥 Compartir horario
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-close="modalCompartir"
+                    aria-label="Cerrar">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form id="formCompartir">
+
+
+                <div class="form-group">
+
+                    <label for="correoCompartir">
+                        Correo de la persona
+                    </label>
+
+                    <input
+                        id="correoCompartir"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <p
+                    id="mensajeCompartir"
+                    class="auth-message">
+                </p>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-close="modalCompartir">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        Compartir horario
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="supabase.js"></script>
+
+    <script src="app.js"></script>
+
+
+
+    <!-- =====================================================
+         SERVICE WORKER
+         ===================================================== -->
+
+    <script>
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener(
+                "load",
+                () => {
+
+                    navigator.serviceWorker.register(
+                        "sw.js"
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
+```
